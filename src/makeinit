@@ -1,0 +1,104 @@
+#-----------------------------------------#
+#       Common makefile definitions       #
+#-----------------------------------------#
+# Makefile for GNU C 2.7.2+ with GNU Make #
+
+##### PATHS #####
+
+ifndef TLKDIR
+TLKDIR = /toolkit
+endif
+ifndef INCDIR
+INCDIR = $(TLKDIR)/h
+endif
+ifndef LIBDIR
+LIBDIR = $(TLKDIR)/lib
+endif
+
+# search paths for source files
+VPATH = $(INCDIR)
+
+##### Variables #####
+
+ifeq ($(DEBUG),1)
+CC = gcc
+CCOPTFLAGS = -g
+else
+CC = gcc
+CCOPTFLAGS = -s -O2 -fomit-frame-pointer -ffast-math -mno-ieee-fp
+endif
+ifeq ($(THREADED),1)
+THRFLAGS = -Zmt
+else
+THRFLAGS =
+endif
+GCCOPT = $(THRFLAGS) $(CCOPTFLAGS) -Zomf -Wall -Werror -funsigned-char\
+	 -I$(subst ;, -I,$(INCDIR))
+CFLAGS = -c
+CPLUSFLAGS = -c
+export GCCOPT
+
+ifdef LIBS
+USELIBS = -l$(subst ;, -l,$(LIBS))
+endif
+
+LD = $(CC) $(USELIBS)
+ifeq ($(EMXRT),1)
+LDFLAGS = -Zcrtdll
+LDFLAGSDLL = -Zdll -Zcrtdll -Zsmall-conv
+else
+LDFLAGS = -Zsys -Zsmall-conv
+LDFLAGSDLL = -Zdll -Zsys -Zso -Zsmall-conv
+endif
+
+IMPLIB = emximp
+IMPLIBOPTS = -o
+
+DEP = gcc
+DEPFLAGS = -MM -Zomf -I$(subst ;, -I,$(INCDIR))
+export DEP DEPFLAGS
+
+RC = rc
+RCFLAGS = -r -n
+
+ifeq ($(FINAL),1)
+LXLITE = lxlite
+LXLITEFLAGS = -i- -ydl
+else
+LXLITE = @rem
+LXLITEFLAGS =
+endif
+
+##### RULES #####
+
+.SUFFIXES:
+.SUFFIXES: .c .cpp .h .hpp .obj .exe .dll .lib .def .rc .res .dep .imp
+
+.def.lib:
+	$(IMPLIB) $(IMPLIBOPTS) $@ $<
+
+.imp.lib:
+	$(IMPLIB) $(IMPLIBOPTS) $@ $<
+
+.c.obj:
+	$(CC) $(CFLAGS) $< -o $@
+
+.cpp.obj:
+	$(CC) $(CPLUSFLAGS) $< -o $@
+
+.obj.exe:
+	$(LD) $(LDFLAGS) $^ -o $@
+	$(LXLITE) $(LXLITEFLAGS) $@
+
+.obj.dll:
+	$(LD) $(LDFLAGSDLL) $^ -o $@
+	$(LXLITE) $(LXLITEFLAGS) $@
+
+.rc.res: $(patsubst %.rc,%.res,$<)
+	$(RC) $(RCFLAGS) $< $@
+
+.cpp.dep:
+	dep.cmd -s "" -d "" -r $^ -o $@
+
+.c.dep:
+	dep.cmd -s "" -d "" -r $^ -o $@

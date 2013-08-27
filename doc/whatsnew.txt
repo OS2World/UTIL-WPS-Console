@@ -1,0 +1,76 @@
+                          -------------------------
+                           lxLite revision history
+                          -------------------------
+
+ [;] Comment
+ [*] Modified
+ [+] Added feature
+ [-] Removed feature
+ [!] Bug fix
+
+ 0.1.0
+ ----- 02-Oct-97 first release
+  [;]  I`ve waited for comments on version 0.0.9 for some time and now
+       here is the first release. Not many changes comparing to 0.0.9, anyway.
+  [;]  WARNING: I`ve compiled online manual (CONSOLE.INF) in the 866`th
+       codepage (russian) since the book contains a chapter in Russian.
+       If you`re unable to read the book on a system with a different
+       codepage (say 437,850) please mail me -- I`ll look for workarounds :-(
+       In the meantime, you can recompile the book with src/doc/prep.cmd
+       replacing "-D:7 -C:866" with "-D:1 -C:437" or whatever is appropiate.
+  [!]  Now -p#,#,#,# properly resizes the window when session is minimized.
+  [!]  If you didn`t set default console position and font size (with
+       Shift+Mouse drag/with FontSize dialog), Console will not set them
+       to 0 first time it is run.
+  [!]  Now Console is multitask-safe, i.e. running multiple copies at once
+       will work as expected (however, since there is a need to serialize
+       OS2.INI access they will not run in parralel, but rather one after
+       other).
+
+ 0.0.9
+ ----- 01-Aug-97
+  [;]  public pre-release
+  [+]  Now Console can change the font of the window it was launched from.
+  [+]  New program - CWRP - used to process some PM events 'externally'
+       since not anything can be done from within a VIO process. However,
+       you shouldn`t run it manually since it was designed to be run
+       automatically when it is needed.
+  [+]  Most options now works both 'locally' (on the window Console runs from)
+       and externally (on the newly-created window).
+  [+]  New switch to set the console title -t"...".
+  [+]  New switch to make window border+title flash (-of{+|-}). Removed
+       duplicated switch "-of" (foreground session) you can achieve
+       the same result as -of+ with -ob-.
+  [+]  New switch to change window border size (-b{w,h})
+  [+]  When Console starts a new window with -s#,# option, it starts it
+       invisible, then resizes it, then shows it (if -ov- has not been
+       specified). This removes annoying flashes.
+
+ 0.0.3
+ ----- 11-Jul-97
+  [*]  Changed the utility name from wOpen to Console.
+  [*]  Most state change switches has moved under '-o' switch.
+  [*]  By default Console changes current window, to start a new session
+       use -on switch.
+  [*]  Now Console detects "font size..." entry in OS2.INI by three dots (...)
+       since has proven that its name is translated in different versions of
+       OS/2 (oh, shit...), but (I hope) they always contains those three dots.
+  [+]  Console autocomputes the size of newly-launched window, if you do not
+       specify it. So, if you run, say, Console -p0,0 -f8,8 -s10,10 *,
+       this will start a new session positioned at (0,0), and not "randomly"
+       positioned as before.
+  [!]  Now Console can start active sessions from inactive windows.
+  [+]  Added ability to change same session window from where it was run.
+       The following parameters can be changed: window cell size (analogous
+       to MODE command), window position (-pX,Y), window size (-p,,W,H),
+       window's maximized (-ox), minimized (-om), visible (-ov),
+       foreground (-of or -ob) states. The -ox- and -om- switches are
+       equivalent to [system menu]->[restore] entry.
+
+ 0.0.2
+ ----- 18-May-97
+  [;]  First public release
+
+ 0.0.1
+ ----- 10-May-97
+  [;]  First internal version

@@ -1,0 +1,4 @@
+NAME CWRP WINDOWAPI
+DESCRIPTION 'Console Window Request Processor'
+STACKSIZE 0x10000
+STUB "stub_min.bin"

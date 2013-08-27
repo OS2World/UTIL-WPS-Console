@@ -1,0 +1,192 @@
+<HTML>
+<HEAD>
+<TITLE>Console window customization utility</TITLE>
+</HEAD>
+<BODY TEXT="#FFFFFF" LINK="#00D0D0" VLINK="#00FFFF" BGCOLOR="#003050">
+<P>
+<H1>Purpose</H1>
+This utility addresses a problem <B>IBM</B> is ignoring since first release of OS/2.
+The problem is, you can define the default size and position for *ALL* console
+windows (including DOS windowed VDMs) but you can`t do it apart. This program
+allows you do it, although, alas, it is not integrated into WPS.
+</P>
+<P>
+The program was rather one of my first experiences in C, so please take it into account.
+It is not too sophisticated, but at least does what it was built for.
+</P>
+<H1>Command-line</H1>
+<P>
+The command-line format looks as follows:
+</P>
+<PRE>Console {options} {program} {...program options...}</PRE>
+<P>
+If you`re typing some options too often, you can put them into a environment
+variable. That variable is treated exactly as command-line, except that it is
+processed before command-line. So, say, if you don`t like ANSI colored output (see below),
+you can put
+</P>
+<PRE>set CONSOLE=-oa-</PRE>
+<P>
+into your CONFIG.SYS file. If you, however, want to override some options in environment
+variable, you can still do it (in above case by using "-oa" on Console command line).
+By default Console will NOT start a new window, so the options you type will
+change the console window Console was started from. Switches that works
+only when starting a new window are marked with /N/, those that works for
+current window are marked with /C/.
+Following options are available:
+</P>
+<DL>
+<DT>-b{w,h} /C/N/
+<DD>Set window border thickness ([W]idth and [H]eight);
+<DT>-f{h,w} /C/N/
+<DD>Set window font [W]idth and [H]eight. You can see what font sizes are available by
+opening the <I>Font Size</I> dialog from any windowed session popup menu.
+Without any arguments (-f) it will read current window's font size
+(for example, you can use this with -q option, see below).
+<DT>-o{a|b|c|d|f|m|n|r|s|v|x}{+|-}
+<DD>Enable (+) or disable (-) one of following [O]ptions:
+<DL>
+ <DT>a /C/N/
+ <DD>Turn on (+)/off (-) [A]NSI colored output. Someday I`ve realized that
+ not everybody likes the neat colors I`m using :-).
+ <DT>b /C/N/
+ <DD>Start a background (+) or foreground (-) session.
+ <DT>c /N/
+ <DD>auto[C]lose on termination (+) or leave window until user closes it
+ <DT>d /N/
+ <DD>Enable (+) or disable (-) a small [D]elay after running command
+     Use this if you experience problems with -p starting a new session
+     The program temporarily changes some entries in OS2.INI file, then
+     starts the session, and finally changes them back. However, I`m not
+     sure <I>when</I> exactly I should change them back, so this option
+     is provided. If you encounter problems even with it, please mail me.
+ <DT>f /C/N/
+ <DD>Start window title [F]lashing (+) or stop flashing (-)
+ <DT>m /C/N/
+ <DD>Start session [M]inimized (+) or non-minimized (-)
+ <DT>n /N/
+ <DD>Start a [N]ew session (+) or change same window (-)
+ <DT>r /C/
+ <DD>[R]esize window to max possible size (+) or leave as-is (-)
+ <DT>s /N/
+ <DD>auto[S]ize window: compute the size of new window based on known
+     console window size and console font size (overriden by -p,,#,#)
+ <DT>v /C/N/
+ <DD>Start a [V]isible console window (+) or invisible (-)
+ <DT>x /C/N/
+ <DD>Start session ma[X]imized (+) or non-maximized (-)
+</DL>
+<DT>-p{{x}{,{y}{,{w}{,h}}}}
+<DD>Set window position (X, Y) and size (W, H) (in pixels). Note that the size is
+impossible to set on a maximized window, so -ox- is enforced if you will specify
+at least one of W,H values (for a new session only). Note that you can skip some
+values, and they will remain at their default values. For example -p,,100 will
+only set the width of the window. This switch even works for <I>current</I>
+window, so if you want to set current's window position to (0,0) you should
+run: Console -p0,0 -- but, if you want to start a <I>new</I> window at (0,0)
+you should run: Console -p0,0 -on<BR>
+Without any parameters -p will read current window's size and position. So,
+for example, if you want to start a new window at same X position as current
+window and Y=0 you should use Console -p -p,0
+<DT>-s{w,h}
+<DD>re[S]ize window as using "MODE W,H" command.
+This switch can be used only on OS/2 sessions since DOS sessions cannot be
+resised to other that 80x25 or 80x50 sizes.
+<DT>-q
+<DD>Display a sample command line to start a window with current
+size/shape (possibly modified by command-line options).
+For example, Console -q will show (among others) the -p switch with
+default window position and -f with the default window font, while the
+Console -p -f -q command will show <B>current</B> window position and
+<B>current</B> window font.
+<DT>-t"..."
+<DD>Set window title. When starting a new session title will become 'sticky',
+i.e. any program which runs inside that new session cannot change that
+title anymore. For current session title can be changed only
+ <OL>
+ <LI>if current window title is not already 'sticky'
+ <LI>for a single program (i.e. you should use the form
+      Console -t"..." myprog.exe args)
+ <LI>if that program does not change title itself (as File Commander does,
+     for example).
+ </OL>
+Sorry, that`s the way OS/2 session manager works.
+<DT>-w{a|d|o}
+<DD>[W]indow type: [D]OS/[O]S2/[A]utodetect; default = OS/2
+The [A]utodetect option is not recommended since it can start as well
+a full-screen session.
+</DL>
+<P>
+Default state of switches: 
+</P> -oa+ -oc+ -od- -of- -om- -on- -or- -os+ -ov+ -ox- -wo
+<H1>Examples</H1>
+<PRE>Console -wo -f18,10 -p200,100 -on t-mail.exe -c</PRE>
+<P>
+This command will run "t-mail.exe -c" in a OS/2 windowed session, with 10x18 font size,
+window will be placed at 200,100 position.
+</P>
+<PRE>Console -s40,25 -p,,300,100 -f8,8 -oc- *</PRE>
+<P>
+This command will open a OS/2 windowed session at 40x25 cells size, with 8x8 font and
+with a 300x100 pixel size. The window will not be automatically closed.
+</P>
+<PRE>Console -ob -s60,20 -p10,10,488,186 -f8,8 *</PRE>
+<P>
+This will open a background OS/2 session with a 60x20 size, placed at 10,10, with a size of
+488,186 pixels and with a 8x8 font.
+</P>
+<PRE>Console -f -p -on</PRE>
+<P>
+This will 'clone' current window.
+</P>
+<H1>Window size</H1>
+<P>
+Window position/size relations are a bit tricky. First, the X coordinate is always
+rounded to nearest 8 divisor (even on 256- 64K- 16M- color modes -- hey, IBM, wake
+up! 21st Century ahead!). For example, if you`ll try the command:
+</P>
+<PRE>Console -os- -on -p0,0,800,400 -f8,8 *</PRE>
+you`ll get a window with X ~= 0 (rounded to 8 since window border added a bit to your 0)
+and Y somewhere in the middle of the screen (on my 1024x768 resolution). Why?
+</P>
+<P>
+The answer is that for some unknown reason, when the internals of a VIO window are resized,
+the <I>top-left</I> corner of the window is unchanged while lower-left corner moves. This
+is a contradiction to the PM paradigm which counts coordinates from lower-left corner, but who
+in IBM cares anyway?!
+</P>
+<P>
+There are a number of approaches for setting window sizes. First is,
+of course, try-and-see method :-) I`m often using it when I`m too lazy to
+multiply some numbers. Other approach is to multiply window size in cells
+with font dimenstion, then add border size. For example, a 60x20 window
+with a 8x8 font will have the following size:
+</P>
+<PRE>Width  = 60 * 8 + 4 + 4 = 488
+Height = 20 * 8 + 4 + 4 + 18 = 186</PRE>
+<P>
+4 is the border width/height (this depends of your scheme palette), 18 is
+the height of titlebar.
+</P>
+<P>
+And the third approach is to launch a window, set its position/size manually
+(say using a mouse) and then query them. It can be done with a utility
+called PMMon - a nice tool for any programmer, but not for consumer :-)
+</P>
+<H2>Note</H2>
+<P>
+Program versions above 0.0.3 contains an 'auto-size' feature (enabled by default) which
+will do everything said above for you. If you don`t like it, you can turn it off
+(using -os- switch). So, now you can simply type:
+<PRE>
+Console -on -f8,8 -s60,20 -p0,0
+</PRE>
+and this will really start a new console at (0,0). You can try same as above
+with the -os- switch to see what will happen.
+</P>
+<HR>
+<A HREF="whatsnew.txt">What's new</A>|
+<A HREF="gpl.html">License</A>|
+<A HREF="apz.html">Author info</A>
+</BODY>
+</HTML>

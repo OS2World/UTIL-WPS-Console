@@ -1,0 +1,6 @@
+NAME Console WINDOWCOMPAT
+DESCRIPTION 'Console window manager'
+STACKSIZE 0x10000
+STUB "stub_vdm.bin"
+IMPORTS
+ _16_Win16SetTitle = PMSHAPI.93
