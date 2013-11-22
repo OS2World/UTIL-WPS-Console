@@ -10,7 +10,9 @@ LICENSE
 
 COMPILE TOOLS
 ===============
-* 
+* C
+* GCC
+* GNU Make
 
 AUTHORS
 ===============
